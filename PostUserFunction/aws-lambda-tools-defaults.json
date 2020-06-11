@@ -13,9 +13,9 @@
     "function-runtime" : "dotnetcore3.1",
     "function-memory-size" : 256,
     "function-timeout"     : 30,
-    "function-handler"     : "Petzfinder.QrCodeGenerator::Petzfinder.QrCodeGenerator.Function::FunctionHandler",
-    "function-name"        : "QRGenerator",
-    "function-role"        : "arn:aws:iam::310489772460:role/lambda_exec_QRGenerator",
+    "function-handler"     : "PostUserFunction::PostUserFunction.Function::FunctionHandler",
+    "function-name"        : "PutUserFunction",
+    "function-role"        : "arn:aws:iam::310489772460:role/lambda_exec_PutUserFunction-1",
     "tracing-mode"         : "PassThrough",
     "environment-variables" : ""
 }
