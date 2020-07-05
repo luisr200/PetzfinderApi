@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
@@ -27,10 +28,13 @@ namespace Petzfinder.GetUserPetsFunction
         {
             if (request.HttpMethod == "OPTIONS")
             {
-                return new ApiGatewayResponse();
+                return new ApiGatewayResponse(200);
             }
+            LambdaLogger.Log("CONTEXT: " + JsonConvert.SerializeObject(request));
             string token = request.Headers["Authorization"];
+            LambdaLogger.Log("Token: " + token);
             var accountEmail = DecodeJWT.GetAccountEmail(token);
+            LambdaLogger.Log("Serial: " + DecodeJWT.GetAccountEmail(token));
             PetService _service = new PetService();
             var pets = await _service.GetAllUserPets(accountEmail);
             ApiGatewayResponse response = new ApiGatewayResponse()

@@ -22,6 +22,10 @@ namespace Petzfinder.GetUserFunction
         /// <returns></returns>
         public async Task<APIGatewayProxyResponse> FunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
         {
+            if (request.HttpMethod == "OPTIONS")
+            {
+                return new ApiGatewayResponse(200);
+            }
             string token = request.Headers["Authorization"] ;
             var accountEmail = DecodeJWT.GetAccountEmail(token);
             //LambdaLogger.Log("Context Identity: " + JsonConvert.SerializeObject(context));

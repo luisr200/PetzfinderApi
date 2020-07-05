@@ -26,5 +26,8 @@ namespace Petzfinder.Models
         [DynamoDBProperty("printed")]
         public string Printed { get; set; }
 
+        [DynamoDBProperty("fileDestination")]
+        public string FileDestination { get; set; }
+
     }
 }

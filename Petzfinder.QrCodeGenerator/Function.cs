@@ -1,9 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Amazon;
+using Amazon.Lambda.APIGatewayEvents;
 using Amazon.Lambda.Core;
 using Amazon.S3;
+using Amazon.S3.Model;
 using Amazon.S3.Transfer;
+using Microsoft.IdentityModel.Tokens;
+using Petzfinder.Model;
+using Petzfinder.Models;
 using Petzfinder.Service;
 using Petzfinder.Util;
 
@@ -14,36 +22,43 @@ namespace Petzfinder.QrCodeGenerator
 {
     public class Function
     {
+        private TagService _tagService = new TagService();
+        private AwsService _AwsService = new AwsService();
 
-        private const string bucketName = "petzfinderqr";
-        // Specify your bucket region (an example region is shown).
-        private static readonly RegionEndpoint bucketRegion = RegionEndpoint.USWest2;
-        private static IAmazonS3 s3Client;
-        private TagService _service = new TagService();
-
-        public async Task FunctionHandler(string input, ILambdaContext context)
+        public async Task<ApiGatewayResponse> FunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            s3Client = new AmazonS3Client(bucketRegion);
-            var fileTransferUtility = new TransferUtility(s3Client);
-            var response = await _service.GetUnprintedTags();
+            List<InMemoryFile> fileList = new List<InMemoryFile>();
 
-            foreach (var val in response)
+            var unprintedTags = await _tagService.GetUnprintedTags();
+            Dictionary<Tags, InMemoryFile> filesDictionary = new Dictionary<Tags, InMemoryFile>();
+            foreach (var val in unprintedTags)
             {
-                var stream = QrCodeCreator.CreateQr($"https://petzfinder.net/tag/{val.TagId}");
-                try
+                var qrArray = QrCodeCreator.CreateQrArray($"https://petzfinder.net/tag/{val.TagId}");
+                var file = new InMemoryFile()
                 {
-                    await fileTransferUtility.UploadAsync(stream,
-                                               bucketName, $"{val.TagId}.png");
-                }
-                catch (AmazonS3Exception e)
-                {
-                    Console.WriteLine("Error encountered on server. Message:'{0}' when writing an object", e.Message);
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine("Unknown encountered on server. Message:'{0}' when writing an object", e.Message);
-                }
+                    Content = qrArray,
+                    FileName = $"{val.TagId}.png"
+                };
+                filesDictionary.Add(val, file);
             }
+            var timeStamp = DateTime.Now.ToString("yyyy_MM_dd_mm");
+            _AwsService.UploadZipFileToS3(ZipFile.GetZipArchive(filesDictionary.Values.ToList()), timeStamp);
+            foreach (var tag in unprintedTags)
+            {
+                tag.Printed = "true";
+                tag.FileDestination = timeStamp.Replace("_mm_ss", "");
+                await _tagService.UpdateTag(tag);
+            }
+            
+            //_AwsService.UploadQRFileListToS3(filesDictionary);
+            ApiGatewayResponse response = new ApiGatewayResponse()
+            {
+                StatusCode = 200
+                //Body = Base64UrlEncoder.Encode(ZipFile.GetZipArchive(filesDictionary.Values.ToList())),
+                //IsBase64Encoded = true
+            };
+            //var zip = ZipFile.GetZipArchive(filesDictionary.Values.ToList());
+            return response;
         }
     }
 }

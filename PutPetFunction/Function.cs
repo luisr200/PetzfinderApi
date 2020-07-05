@@ -13,26 +13,26 @@ using Petzfinder.Util;
 // Assembly attribute to enable the Lambda function's JSON input to be converted into a .NET class.
 [assembly: LambdaSerializer(typeof(Amazon.Lambda.Serialization.SystemTextJson.DefaultLambdaJsonSerializer))]
 
-namespace PostUserFunction
+namespace PutPetFunction
 {
     public class Function
     {
-
         public async Task<ApiGatewayResponse> FunctionHandler(APIGatewayProxyRequest request, ILambdaContext context)
         {
-            string token = request.Headers["Authorization"];
             LambdaLogger.Log("CONTEXT: " + JsonConvert.SerializeObject(request));
-            LambdaLogger.Log("BODY: " + JsonConvert.SerializeObject(request.Body));
-            var accountEmail = DecodeJWT.GetAccountEmail(token);
             //byte[] data = Convert.FromBase64String(request.Body);
             //string decodedString = Encoding.UTF8.GetString(data);
-            var user = JsonConvert.DeserializeObject<User>(request.Body);
-            user.Email = accountEmail;
-            UserService _service = new UserService();
-            await _service.PutUser(user);
+            var pet = JsonConvert.DeserializeObject<Pet>(request.Body);
+            if (string.IsNullOrEmpty(pet.Id))
+            {
+                pet.Id = AlphanumericFactory.RandomString(5);
+            }
+            PetService _service = new PetService();
+            await _service.PutPet(pet);
             ApiGatewayResponse response = new ApiGatewayResponse()
             {
-                StatusCode = 200
+                StatusCode = 200,
+                Body = JsonConvert.SerializeObject(pet)
             };
             return response;
         }

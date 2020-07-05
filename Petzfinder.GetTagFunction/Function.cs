@@ -29,7 +29,7 @@ namespace Petzfinder.GetTagFunction
         {
             if (request.HttpMethod == "OPTIONS")
             {
-                return new ApiGatewayResponse();
+                return new ApiGatewayResponse(200);
             }
             string tagId;
             request.PathParameters.TryGetValue("tagId", out tagId);

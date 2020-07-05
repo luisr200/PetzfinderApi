@@ -338,3 +338,6 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+/Assets/QRcodes
+/Assets/QRcodes/*.png
+Assets/QRcodes/ZY846.png

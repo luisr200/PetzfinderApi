@@ -44,18 +44,19 @@ namespace Petzfinder.Data
                 //item.TryGetValue("id", out str);
                 Pet newPet = new Pet
                 {
-                    Id = item.GetValueOrDefault("id").S,
-                    Age = item.GetValueOrDefault("age").S,
-                    Birthday = item.GetValueOrDefault("birthday").S,
-                    Description = item.GetValueOrDefault("description").S,
-                    MainPicture = item.GetValueOrDefault("mainPicture").S,
-                    Name = item.GetValueOrDefault("name").S,
-                    Pedigree = item.GetValueOrDefault("pedigree").S,
-                    Pictures = item.GetValueOrDefault("pictures").S,
-                    SpecialConditions = item.GetValueOrDefault("specialConditions").S,
-                    SpecialConsiderations = item.GetValueOrDefault("specialConsiderations").S,
-                    User = item.GetValueOrDefault("user").S,
-                    Avatar= item.GetValueOrDefault("avatar").S
+                    Id = item.GetValueOrDefault("id")?.S,
+                    Age = item.GetValueOrDefault("age")?.S,
+                    Birthday = item.GetValueOrDefault("birthday")?.S,
+                    Description = item.GetValueOrDefault("description")?.S,
+                    MainPicture = item.GetValueOrDefault("mainPicture")?.S,
+                    Name = item.GetValueOrDefault("name")?.S,
+                    Pedigree = item.GetValueOrDefault("pedigree")?.S,
+                    Pictures = item.GetValueOrDefault("pictures")?.S,
+                    SpecialConditions = item.GetValueOrDefault("specialConditions")?.S,
+                    SpecialConsiderations = item.GetValueOrDefault("specialConsiderations")?.S,
+                    User = item.GetValueOrDefault("user")?.S,
+                    Avatar= item.GetValueOrDefault("avatar")?.S,
+                    Sex = item.GetValueOrDefault("sex")?.S
                 };
                 pets.Add(newPet);
 

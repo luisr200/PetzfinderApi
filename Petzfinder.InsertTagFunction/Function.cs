@@ -32,6 +32,7 @@ namespace Petzfinder.InsertTagFunction
             {
                 Tags tag = new Tags();
                 tag.TagId = AlphanumericFactory.RandomString(5);
+                tag.Printed = "false";
                 tags.Add(tag);
             }
             await _tagService.InsertTags(tags);

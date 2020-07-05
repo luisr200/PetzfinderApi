@@ -1,0 +1,6 @@
+x:2.5
+y:3.5
+xqr:2mm
+yqr:8mm
+xtxt:2.9 cm
+ytxt:3mm

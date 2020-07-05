@@ -1,7 +1,7 @@
 ﻿using Amazon.DynamoDBv2.DataModel;
 using System.Collections.Generic;
 
-namespace Petzfinder.Models
+namespace Petzfinder.Model
 {
     [DynamoDBTable("Pet")]
     public class Pet
@@ -14,6 +14,9 @@ namespace Petzfinder.Models
 
         [DynamoDBProperty("name")]
         public string Name { get; set; }
+
+        [DynamoDBProperty("sex")]
+        public string Sex { get; set; }
 
         [DynamoDBProperty("age")]
         public string Age { get; set; }

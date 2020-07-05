@@ -33,5 +33,8 @@ namespace Petzfinder.Model
 
         [DynamoDBProperty("birthdate")]
         public string Birthdate { get; set; }
+
+        [DynamoDBProperty("address")]
+        public string Address { get; set; }
     }
 }
